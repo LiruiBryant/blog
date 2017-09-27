@@ -83,7 +83,7 @@ tags:
   * redis
   * memcached
   * mongdb
-  
+
 ### 操作系统
    * 进程通信IPC，与线程区别
    * OS集中策略、进程调度
@@ -95,30 +95,16 @@ tags:
         * vim
 ### java
    * 面向对象
-   * 集合
-      * Arrays 
-            * Arrays.asList(): 可以将Array转换成List。
-            * Arrays.binarySearch : 在一个已排序的或者其中一段中快速查找
-            * Arrays.copyOf : 如果扩大数组容量又不想改变内容时候用这个方法
-            * Arrays.copyOfRange :  可以复制整个数组或者其中一个部分
-            * Arrays.deepEquals、Arrays.deepHashCode : Arrays.equals、hashCode的高级版本，支持子数据操作。
-            * Arrays.equals : 比较两个数组是否想相等。
-            * Arrays.fill  : 用一个给定的值填充整个数组或者其中一个部分
-            * Arrays.hashCode : 根据数组内容计算器hash值。
-            * Arrays.sort : 对整个数组或者数组一部分进行排序。
-            * Arrays.toString : 打印数组的内容
-            * 所有集合都可以用 T[] Collection.toArray(T[] a)方法复制到整个数组：
-                return coll.toArray(new T[coll.size()]);
-            
+   * [集合](https://earyant.github.io/2017/09/10/java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/)
         * map
-            * HashMap
+            * [Hashmap](https://earyant.github.io/2017/08/09/HashMap%E5%85%A8%E8%A7%A3%E6%9E%90/)
             * EnumMap: 枚举类型座位键值的Map，效率要高于HashMap
-            * HashTable： 
+            * HashTable：
             * ConcurrentHashMap：
                 * get操作全并发访问，put操作可配置并发操作的哈希表，并发级别可以通过构造参数中的concurrentLevel参数设置(默认级别为16).该参数会在Map内部划分一些分区，在put的时候，只有更新的分区是锁住的。
             * ConcurrentSkipListMap： 基于跳跃表的ConcurrentNavigableMap实现。本质上这种集合可以当做TreeMap的线程安全版本来使用。
             * IdentityHashMap
-            * LinkedHashMap 
+            * LinkedHashMap
             * TreeMap
             * WeakHashMap
         * list
@@ -128,8 +114,9 @@ tags:
                 * 在尾部添加成本低，在头部添加成本高(线性复杂度)。
             * LinkedList
                 * Deque实现，每一个节点都保存着上一个节点和下一个节点的指针。所以数据的存取和更新都具有线性复杂度。
+                [ArrayList和LinkedList对比](https://earyant.github.io/2017/09/10/ArrayList%E5%92%8CLinkedList%E5%AF%B9%E6%AF%94/)
             * Vector
-        * set 
+        * set
             * HashSet
             * EnumSet
             * BitSet
@@ -137,11 +124,11 @@ tags:
             * TreeSet
             * ConcurrentSkipListSet ： 使用ConcurrentSkipListMap来存储线程安全的Set。
             * CopyOnWriteArraySet： 使用CopyOnWriteArrayList存储的线程安全的Set
-        
+
         * Queues/Deques
             * ArrayDeQue ： Deque是基于有首尾指针的数组（环形缓冲区）实现的。和LinkedList不同，这个类没有实现List接口，因此，如果没有收尾元素的话，就不能去除任何元素。比LinkedList好一点，产生的垃圾数量较少。
             * Stack ：后进先出的队列
-            -- 并发 -- 
+            -- 并发 --
             * ArrayBlockingQueue： 基于书实现的一个有界阻塞对，大小不能重新定义，试图向一个满的队列添加元素的时候，就会受到阻塞，知道另一个方法从队列中取出元素。
             * ConcurrentLinkedDeque、ConcurrentLinkedQueue：基于链表实现的无解队列，添加元素不阻塞。要求消费者的速度至少要比生产一样快，不然内存就会耗尽，严重依赖于CAS操作。
             * DelayQueue ： 无界的保存Delayed元素的集合，元素只有在延时已经过期的时候才能被取出。队列的第一个元素延期最小(包含负值，延时已经过期)，要实现一个延期任务的队列的时候使用(不要自己手动实现--使用ScheduledThreadPoolExecutor)
@@ -193,8 +180,21 @@ tags:
             * shuffle： 随机排放List集合中的节点，而已给定自己的生成器
             * sort ： 自然排序或者指定的排序器排序
             * swap 交换集合中的两个元素的位置
-                
-                
+        * Arrays
+            * Arrays.asList(): 可以将Array转换成List。
+            * Arrays.binarySearch : 在一个已排序的或者其中一段中快速查找
+            * Arrays.copyOf : 如果扩大数组容量又不想改变内容时候用这个方法
+            * Arrays.copyOfRange :  可以复制整个数组或者其中一个部分
+            * Arrays.deepEquals、Arrays.deepHashCode : Arrays.equals、hashCode的高级版本，支持子数据操作。
+            * Arrays.equals : 比较两个数组是否想相等。
+            * Arrays.fill  : 用一个给定的值填充整个数组或者其中一个部分
+            * Arrays.hashCode : 根据数组内容计算器hash值。
+            * Arrays.sort : 对整个数组或者数组一部分进行排序。
+            * Arrays.toString : 打印数组的内容
+            * 所有集合都可以用 T[] Collection.toArray(T[] a)方法复制到整个数组：
+                return coll.toArray(new T[coll.size()]);
+
+
    * 并发和多线程
         * 线程池
         * SYNC
@@ -240,8 +240,8 @@ tags:
 ### 脚本语言
    * python
    * shell
-  
-   
+
+
 ## 架构
   ### 分布式     
    * CAP原理和BASE理论
@@ -265,7 +265,7 @@ tags:
    * 分布式事务
         * redis分布锁
    * 分布式锁
-   
+
    ### 大数据
    * hadoop生态圈
         * hive
@@ -278,7 +278,7 @@ tags:
    * 搜索引擎与技术
    * 机器学习与技术
    * 人工智能
-   
+
 ## 书单
    * 算法与数据结构
         * 数据结构（严蔚敏）/大话数据结构              * 剑指Offer/程序员面试金典/编程珠玑/编程之美/牛客网+leetcode
