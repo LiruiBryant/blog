@@ -46,7 +46,7 @@ tags:
         ...
       }
     ```
-  * PROPAGATION_SUPPORTS 如果存在一个事务，就用这个事务，如果没有事务，就非事务执行，但是对于事务同步管理器，PROPAGATION_SUPPORTS和不适用事务有少许区别。
+  * PROPAGATION_SUPPORTS 如果存在一个事务，就用这个事务，如果没有事务，就非事务执行，但是对于事务同步管理器，PROPAGATION_SUPPORTS和不使用事务有少许区别。
     ```java
     //事务属性 PROPAGATION_REQUIRED
     void methodA(){
@@ -64,87 +64,48 @@ tags:
   * PROPAGATION_REQUIRED_NEW 开启一个新的事务，
     ```java
         //事务属性 PROPAGATION_REQUIRED
-
         void methodA(){
-
           doSomeThingA();
-
           methodB();
-
           doSomeThingB();
-
         }
-
         //事务属性 PROPAGATION_REQUIRES_NEW
-
         void methodB(){
-
         ……
-
         }
     ```
     相当于：
     ```java
         TransactionManager tm = null;
-
           try{
-
           //获得一个JTA事务管理器
-
           tm = getTransactionManager();
-
           tm.begin();//开启一个新的事务
-
           Transaction ts1 = tm.getTransaction();
-
           doSomeThing();
-
           tm.suspend();//挂起当前事务
-
           try{
-
             tm.begin();//重新开启第二个事务
-
             Transaction ts2 = tm.getTransaction();
-
             methodB();
-
             ts2.commit();//提交第二个事务
-
           }
-
           Catch(RunTimeException ex){
-
             ts2.rollback();//回滚第二个事务
-
           }
-
           finally{
-
            //释放资源
-
           }
-
           //methodB执行完后，复恢第一个事务
-
           tm.resume(ts1);
-
           doSomeThingB();
-
           ts1.commit();//提交第一个事务
-
         }
-
         catch(RunTimeException ex){
-
           ts1.rollback();//回滚第一个事务
-
         }
-
         finally{
-
         //释放资源
-
         }
     ```
     > 在这里，我把ts1称为外层事务，ts2称为内层事务。从上面的代码可以看出，ts2与ts1是两个独立的事务，互不相干。Ts2是否成功并不依赖于ts1。如果methodA方法在调用methodB方法后的doSomeThingB方法失败了，而methodB方法所做的结果依然被提交。而除了methodB之外的其它代码导致的结果却被回滚了。使用PROPAGATION_REQUIRES_NEW,需要使用JtaTransactionManager作为事务管理器。
@@ -154,78 +115,41 @@ tags:
 * PROPAGATION_NESTED 如果一个活动的事务存在，则运行在一个嵌套的事务中. 如果没有活动事务, 则按TransactionDefinition.PROPAGATION_REQUIRED 属性执行。这是一个嵌套事务,使用JDBC 3.0驱动时,仅仅支持DataSourceTransactionManager作为事务管理器。需要JDBC 驱动的java.sql.Savepoint类。有一些JTA的事务管理器实现可能也提供了同样的功能。使用PROPAGATION_NESTED，还需要把PlatformTransactionManager的nestedTransactionAllowed属性设为true;而nestedTransactionAllowed属性值默认为false;
   ```java
       //事务属性 PROPAGATION_REQUIRED
-
       methodA(){
-
       doSomeThingA();
-
       methodB();
-
       doSomeThingB();
-
       }
-
-
-
       //事务属性 PROPAGATION_NESTED
-
       methodB(){
-
       ……
-
       }
   ```
   > 如果单独调用methodB方法，则按REQUIRED属性执行。如果调用methodA方法，相当于下面的效果：
-
   ```java
         Connection con = null;
-
       Savepoint savepoint = null;
-
       try{
-
        con = getConnection();
-
        con.setAutoCommit(false);
-
        doSomeThingA();
-
        savepoint = con2.setSavepoint();
-
        try{
-
            methodB();
-
        }catch(RuntimeException ex){
-
           con.rollback(savepoint);
-
        }
-
        finally{
-
          //释放资源
-
       }
-
-
-
         doSomeThingB();
-
         con.commit();
-
       }
-
       catch(RuntimeException ex){
-
         con.rollback();
-
       }
-
       finally{
-
        //释放资源
-
       }
     ```
     > PROPAGATION_NESTED 与PROPAGATION_REQUIRES_NEW的区别:它们非常类似,都像一个嵌套事务，如果不存在一个活动的事务，都会开启一个新的事务。使用PROPAGATION_REQUIRES_NEW时，内层事务与外层事务就像两个独立的事务一样，一旦内层事务进行了提交后，外层事务不能对其进行回滚。两个事务互不影响。两个事务不是一个真正的嵌套事务。同时它需要JTA事务管理器的支持。
