@@ -51,3 +51,8 @@ crashlytics-build.properties
 fabric.properties
 
 /.idea/
+*.iml
+*.iml
+.idea/_posts.iml
+.idea/checkstyle-idea.xml
+.idea/dictionaries/earyant.xml
