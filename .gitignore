@@ -51,8 +51,12 @@ crashlytics-build.properties
 fabric.properties
 
 /.idea/
+<<<<<<< HEAD
 *.iml
 *.iml
 .idea/_posts.iml
 .idea/checkstyle-idea.xml
 .idea/dictionaries/earyant.xml
+=======
+.DS_Store
+>>>>>>> 9eb6970a91340c5d47bde21cb48b4f31721336af
