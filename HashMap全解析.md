@@ -2,8 +2,6 @@
 title: HashMap全解析
 date: 2017-08-09 15:20:26
 tags:
-toc: true
-top: true
 ---
 
 # 定义
@@ -34,6 +32,7 @@ HashMap实现了Map接口，继承自AbstactMap。其中Map接口定义了键映
 数组+链表+红黑树(jdk8中增加红黑树)
 ![](../img/hashMap内存结构.png)
 HashMap的底层实现还是数组，只不过数组的每一项都是一条链，其中initialCapacity参数代表了该数组额长度。
+```java
      /**
      * Returns a power of two size for the given target capacity.
      */
@@ -46,10 +45,11 @@ HashMap的底层实现还是数组，只不过数组的每一项都是一条链�
         n |= n >>> 16;
         return (n < 0) ? 1 : (n >= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1;
     }
+```
 这一段表示将初始容量变成向下靠近2的幂次方的数。
 # Node
 
-    ```
+```java
     static class Node<K,V> implements Map.Entry<K,V> {
         final int hash;    //用来定位数组索引位置
         final K key;
@@ -63,7 +63,7 @@ HashMap的底层实现还是数组，只不过数组的每一项都是一条链�
         public final V setValue(V newValue) { ... }
         public final boolean equals(Object o) { ... }
     }
-    ```
+```
 Node是HashMap的一个内部类，实现了Map.Entry接口，本质是一个映射（键值对）。
 
 HashMap就是使用哈希表来存储的，哈希表为解决冲突，可以采用开放地址法和链地址法等来解决问题，java中HashMap采用了链地址法，简单来说就是数组加链表的结合。在每个数组元素都是一个链表结构，当数据被hash后，得到数组下标，把数据放在对应下标元素的链表上，例如：
@@ -74,9 +74,9 @@ HashMap就是使用哈希表来存储的，哈希表为解决冲突，可以采�
 # 容量
 在理解Hash和扩容流程之前，我们得先了解下HashMap的几个字段。从HashMap的默认构造函数源码可知，构造函数就是对下面几个字段进行初始化，源码如下：
 ```
-    int threshold;             // 所能容纳的key-value对极限 
+    int threshold;             // 所能容纳的key-value对极限
     final float loadFactor;    // 负载因子
-    int modCount;  
+    int modCount;
     int size;
 ```
 首先，Node[] table的初始化长度length为默认16，loadFactor为负载因子，默认为0.75.threshold是HashMap所能容纳的最大数据量的Node（键值对）个数。threshold=length*loadFactor，也就是说，在数组定义好长度之后，负载因子越大，所能容纳的键值对个数越多。
@@ -93,15 +93,15 @@ HashMap就是使用哈希表来存储的，哈希表为解决冲突，可以采�
 #方法
 * 确定哈希桶数组索引位置。
   不管增加、删除、查找键值对，定位到哈希桶数组的位置都是很关键的第一步，
- ```
-    方法一：
+ ``` java
+    // 方法一：
 static final int hash(Object key) {   //jdk1.8 & jdk1.7
      int h;
      // h = key.hashCode() 为第一步 取hashCode值
      // h ^ (h >>> 16)  为第二步 高位参与运算
      return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
 }
-方法二：
+// 方法二：
 static int indexFor(int h, int length) {  //jdk1.7的源码，jdk1.8没有这个方法，但是实现原理一样的
      return h & (length-1);  //第三步 取模运算
 }
@@ -113,8 +113,8 @@ static int indexFor(int h, int length) {  //jdk1.7的源码，jdk1.8没有这个
 * put方法
 ![](../img/hashMap put方法执行流程图.png)
 
-```
-    public V put(K key, V value) {
+```java
+ 1   public V put(K key, V value) {
  2     // 对key的hashCode()做hash
  3     return putVal(hash(key), key, value, false, true);
  4 }
@@ -125,8 +125,8 @@ static int indexFor(int h, int length) {  //jdk1.7的源码，jdk1.8没有这个
  9     // 步骤①：tab为空则创建
 10     if ((tab = table) == null || (n = tab.length) == 0)
 11         n = (tab = resize()).length;
-12     // 步骤②：计算index，并对null做处理 
-13     if ((p = tab[i = (n - 1) & hash]) == null) 
+12     // 步骤②：计算index，并对null做处理
+13     if ((p = tab[i = (n - 1) & hash]) == null)
 14         tab[i] = newNode(hash, key, value, null);
 15     else {
 16         Node<K,V> e; K k;
@@ -143,7 +143,7 @@ static int indexFor(int h, int length) {  //jdk1.7的源码，jdk1.8没有这个
 27                 if ((e = p.next) == null) {
 28                     p.next = newNode(hash, key,value,null);
                         //链表长度大于8转换为红黑树进行处理
-29                     if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st  
+29                     if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
 30                         treeifyBin(tab, hash);
 31                     break;
 32                 }
@@ -174,15 +174,15 @@ static int indexFor(int h, int length) {  //jdk1.7的源码，jdk1.8没有这个
 
 #扩容（resize）
 
-```
+```java
     1 void resize(int newCapacity) {   //传入新的容量
     2     Entry[] oldTable = table;    //引用扩容前的Entry数组
- 3     int oldCapacity = oldTable.length;         
+ 3     int oldCapacity = oldTable.length;
  4     if (oldCapacity == MAXIMUM_CAPACITY) {  //扩容前的数组大小如果已经达到最大(2^30)了
  5         threshold = Integer.MAX_VALUE; //修改阈值为int的最大值(2^31-1)，这样以后就不会扩容了
  6         return;
  7     }
- 8 
+ 8
  9     Entry[] newTable = new Entry[newCapacity];  //初始化一个新的Entry数组
 10     transfer(newTable);                         //！！将数据转移到新的Entry数组里
 11     table = newTable;                           //HashMap的table属性引用新的Entry数组
@@ -192,7 +192,7 @@ static int indexFor(int h, int length) {  //jdk1.7的源码，jdk1.8没有这个
 
 这里就是使用一个容量更大的数组来代替已有的容量小的数组，transfer()方法将原有Entry数组的元素拷贝到新的Entry数组里。
 
-```
+```java
 1 void transfer(Entry[] newTable) {
  2     Entry[] src = table;                   //src引用了旧的Entry数组
  3     int newCapacity = newTable.length;
