@@ -216,3 +216,4 @@ List `<integer>` ints = Lists.newArrayList(1,2,3,4,5,6,7,8,9,10); System.out.pri
 给定的比较条件，返回最大最小值
 
 [参考](http://ifeve.com/stream/)
+[好文收藏](https://blog.csdn.net/dm_vincent/article/category/2268127)
