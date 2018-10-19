@@ -789,3 +789,5 @@ top: true
 感谢：
 [这可能不只是一篇面经](https://www.nowcoder.com/discuss/29890?hmsr=toutiao.io&source=rss&utm-medium=toutiao.io&utm-source=toutiao.io)
 [java整理](https://github.com/kdn251/interviews/blob/master/README-zh-cn.md)
+[后端架构师技术图谱](https://github.com/xingshaocheng/architect-awesome/blob/master/README.md#%E5%A4%9A%E7%BA%A7%E7%BC%93%E5%AD%98)
+
